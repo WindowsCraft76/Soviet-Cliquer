@@ -1,0 +1,533 @@
+fileFormatVersion: 2
+guid: f756610eb83f27e498a96f2b38317e9e
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 4651936855435469407
+    second: WindowsCraft76_1024x1024_0
+  - first:
+      213: 7189513967988526955
+    second: WindowsCraft76_1024x1024_1
+  - first:
+      213: 9183816133067995098
+    second: WindowsCraft76_1024x1024_2
+  - first:
+      213: -866285778632797399
+    second: WindowsCraft76_1024x1024_3
+  - first:
+      213: -22088547777859626
+    second: WindowsCraft76_1024x1024_4
+  - first:
+      213: 9123753569660276534
+    second: WindowsCraft76_1024x1024_5
+  - first:
+      213: -3547385062600671640
+    second: WindowsCraft76_1024x1024_6
+  - first:
+      213: -646744017253397991
+    second: WindowsCraft76_1024x1024_7
+  - first:
+      213: -6837134598307501675
+    second: WindowsCraft76_1024x1024_8
+  - first:
+      213: 2510227603648414716
+    second: WindowsCraft76_1024x1024_9
+  - first:
+      213: -1217763947506084344
+    second: WindowsCraft76_1024x1024_10
+  - first:
+      213: -2906109572309174299
+    second: WindowsCraft76_1024x1024_11
+  - first:
+      213: -7095381046958236836
+    second: WindowsCraft76_1024x1024_12
+  - first:
+      213: -2734841445332153572
+    second: WindowsCraft76_1024x1024_13
+  - first:
+      213: -5297674171546669607
+    second: WindowsCraft76_1024x1024_14
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 1024
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WindowsStoreApps
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: WindowsCraft76_1024x1024_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 1024
+        height: 1024
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f5267c94ceffe8040800000000000000
+      internalID: 4651936855435469407
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WindowsCraft76_1024x1024_1
+      rect:
+        serializedVersion: 2
+        x: 13
+        y: 295
+        width: 86
+        height: 86
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b6f4aa9bcd846c360800000000000000
+      internalID: 7189513967988526955
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WindowsCraft76_1024x1024_2
+      rect:
+        serializedVersion: 2
+        x: 109
+        y: 295
+        width: 28
+        height: 86
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ad7f4067d18737f70800000000000000
+      internalID: 9183816133067995098
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WindowsCraft76_1024x1024_3
+      rect:
+        serializedVersion: 2
+        x: 146
+        y: 295
+        width: 70
+        height: 86
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9239e929ca55af3f0800000000000000
+      internalID: -866285778632797399
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WindowsCraft76_1024x1024_4
+      rect:
+        serializedVersion: 2
+        x: 225
+        y: 295
+        width: 62
+        height: 86
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6dfa814359681bff0800000000000000
+      internalID: -22088547777859626
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WindowsCraft76_1024x1024_5
+      rect:
+        serializedVersion: 2
+        x: 296
+        y: 295
+        width: 61
+        height: 86
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 63f8dc928851e9e70800000000000000
+      internalID: 9123753569660276534
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WindowsCraft76_1024x1024_6
+      rect:
+        serializedVersion: 2
+        x: 367
+        y: 295
+        width: 86
+        height: 86
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 86ef826941825cec0800000000000000
+      internalID: -3547385062600671640
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WindowsCraft76_1024x1024_7
+      rect:
+        serializedVersion: 2
+        x: 463
+        y: 295
+        width: 61
+        height: 86
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 91a800f2ebd4607f0800000000000000
+      internalID: -646744017253397991
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WindowsCraft76_1024x1024_8
+      rect:
+        serializedVersion: 2
+        x: 533
+        y: 295
+        width: 54
+        height: 86
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 599295abe4e9d11a0800000000000000
+      internalID: -6837134598307501675
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WindowsCraft76_1024x1024_9
+      rect:
+        serializedVersion: 2
+        x: 596
+        y: 295
+        width: 61
+        height: 86
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cf308dca4be16d220800000000000000
+      internalID: 2510227603648414716
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WindowsCraft76_1024x1024_10
+      rect:
+        serializedVersion: 2
+        x: 667
+        y: 295
+        width: 61
+        height: 86
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8065f984422a91fe0800000000000000
+      internalID: -1217763947506084344
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WindowsCraft76_1024x1024_11
+      rect:
+        serializedVersion: 2
+        x: 737
+        y: 295
+        width: 62
+        height: 86
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5e73620cdbc6ba7d0800000000000000
+      internalID: -2906109572309174299
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WindowsCraft76_1024x1024_12
+      rect:
+        serializedVersion: 2
+        x: 808
+        y: 295
+        width: 62
+        height: 86
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c5bd30ed784288d90800000000000000
+      internalID: -7095381046958236836
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WindowsCraft76_1024x1024_13
+      rect:
+        serializedVersion: 2
+        x: 879
+        y: 295
+        width: 62
+        height: 86
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c1b06fdf134eb0ad0800000000000000
+      internalID: -2734841445332153572
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WindowsCraft76_1024x1024_14
+      rect:
+        serializedVersion: 2
+        x: 950
+        y: 295
+        width: 61
+        height: 86
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9dde235c861ea76b0800000000000000
+      internalID: -5297674171546669607
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 3694eefb540541f4abb78d9690dcef34
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      WindowsCraft76_1024x1024_0: 4651936855435469407
+      WindowsCraft76_1024x1024_1: 7189513967988526955
+      WindowsCraft76_1024x1024_10: -1217763947506084344
+      WindowsCraft76_1024x1024_11: -2906109572309174299
+      WindowsCraft76_1024x1024_12: -7095381046958236836
+      WindowsCraft76_1024x1024_13: -2734841445332153572
+      WindowsCraft76_1024x1024_14: -5297674171546669607
+      WindowsCraft76_1024x1024_2: 9183816133067995098
+      WindowsCraft76_1024x1024_3: -866285778632797399
+      WindowsCraft76_1024x1024_4: -22088547777859626
+      WindowsCraft76_1024x1024_5: 9123753569660276534
+      WindowsCraft76_1024x1024_6: -3547385062600671640
+      WindowsCraft76_1024x1024_7: -646744017253397991
+      WindowsCraft76_1024x1024_8: -6837134598307501675
+      WindowsCraft76_1024x1024_9: 2510227603648414716
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
