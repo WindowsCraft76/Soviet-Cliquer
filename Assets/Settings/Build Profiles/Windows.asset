@@ -475,7 +475,7 @@ MonoBehaviour:
     - line: '|     duration: 2'
     - line: '|   - logo: {fileID: 4651936855435469407, guid: f756610eb83f27e498a96f2b38317e9e,
         type: 3}'
-    - line: '|     duration: 2'
+    - line: '|     duration: 3'
     - line: '|   m_VirtualRealitySplashScreen: {fileID: 2800000, guid: f756610eb83f27e498a96f2b38317e9e,
         type: 3}'
     - line: '|   defaultScreenWidth: 1920'
