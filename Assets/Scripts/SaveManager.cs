@@ -1,14 +1,14 @@
 using UnityEngine;
 using System.IO;
+using System.Security.Cryptography;
+using System.Text;
 using UnityEngine.SceneManagement;
-using System;
 
 [System.Serializable]
 public class SaveData
 {
     public int counter = 0;
     public string saveDate = "";
-    public bool isMuted = false;
     public string userId = "";
 }
 
@@ -21,21 +21,17 @@ public class SaveManager : MonoBehaviour
         get
         {
             string roamingPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.ApplicationData);
-            return Path.Combine(roamingPath, ".Soviet-Cliquer", "data.json");
+            return Path.Combine(roamingPath, ".Soviet-Cliquer", "data.pem");
         }
     }
 
     [HideInInspector]
     public int currentCounter = 0;
-    
-    [HideInInspector]
-    public bool isMuted = false;
 
     [HideInInspector]
     public string currentUserId = "";
-
-    private float saveTimer = 0f;
-    private const float SAVE_INTERVAL = 60f;
+    private byte[] _aesKey;
+    private const int IV_SIZE = 16;
 
     void Awake()
     {
@@ -45,8 +41,8 @@ public class SaveManager : MonoBehaviour
             return;
         }
         Instance = this;
-        DontDestroyOnLoad(gameObject);
 
+        _aesKey = DeriveKey(SystemInfo.deviceUniqueIdentifier);
         Load();
     }
 
@@ -60,26 +56,16 @@ public class SaveManager : MonoBehaviour
         SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
-    void Update()
-    {
-        saveTimer += Time.deltaTime;
-        if (saveTimer >= SAVE_INTERVAL)
-        {
-            saveTimer = 0f;
-            Save();
-            Debug.Log("[SaveManager] Auto-save.");
-        }
-    }
-
     void OnApplicationQuit()
     {
         Save();
-        Debug.Log("[SaveManager] Auto-save.");
+        Debug.Log("[SaveManager] Save on quit.");
     }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         Save();
+        Debug.Log($"[SaveManager] Save on scene load: {scene.name}");
     }
 
     public void Save()
@@ -93,19 +79,26 @@ public class SaveManager : MonoBehaviour
         SaveData data = new SaveData
         {
             counter = currentCounter,
-            isMuted = isMuted,
             userId = currentUserId,
             saveDate = System.DateTime.Now.ToString("yyyy-MM-dd_HH:mm:ss")
         };
 
-        string directory = Path.GetDirectoryName(FilePath);
-        if (!Directory.Exists(directory))
+        try
         {
-            Directory.CreateDirectory(directory);
-        }
+            string json = JsonUtility.ToJson(data, prettyPrint: true);
+            byte[] encrypted = Encrypt(json, _aesKey);
 
-        string json = JsonUtility.ToJson(data, prettyPrint: true);
-        File.WriteAllText(FilePath, json);
+            string directory = Path.GetDirectoryName(FilePath);
+            if (!Directory.Exists(directory))
+                Directory.CreateDirectory(directory);
+
+            File.WriteAllBytes(FilePath, encrypted);
+            Debug.Log("[SaveManager] Data saved (encrypted).");
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"[SaveManager] Failed to save data: {e.Message}");
+        }
     }
 
     public void Load()
@@ -114,53 +107,111 @@ public class SaveManager : MonoBehaviour
         {
             Debug.Log("[SaveManager] No save file found. Initializing data.");
             currentCounter = 0;
-            isMuted = false;
             currentUserId = GenerateNewUUID();
-            ApplyAudioSettings();
             Save();
             return;
         }
 
-        string json = File.ReadAllText(FilePath);
-        SaveData data = JsonUtility.FromJson<SaveData>(json);
-        
-        currentCounter = data.counter;
-        isMuted = data.isMuted;
-
-        if (IsValidUUID(data.userId))
+        try
         {
-            currentUserId = data.userId;
-        }
-        else
-        {
-            Debug.LogError("[SaveManager] Corrupted or missing UUID detected in data.json! Generating a new one...");
-            currentUserId = GenerateNewUUID();
-            Save();
-        }
+            byte[] encrypted = File.ReadAllBytes(FilePath);
+            string json = Decrypt(encrypted, _aesKey);
 
-        ApplyAudioSettings();
-        Debug.Log("[SaveManager] Save data loaded successfully.");
+            SaveData data = JsonUtility.FromJson<SaveData>(json);
+            currentCounter = data.counter;
+
+            if (IsValidUUID(data.userId))
+            {
+                currentUserId = data.userId;
+            }
+            else
+            {
+                Debug.LogError("[SaveManager] Corrupted or missing UUID in save file. Generating a new one.");
+                currentUserId = GenerateNewUUID();
+                Save();
+            }
+
+            Debug.Log($"[SaveManager] Data loaded. Counter: {currentCounter} | Last save: {data.saveDate}");
+        }
+        catch (CryptographicException e)
+        {
+            Debug.LogError($"[SaveManager] Decryption failed (wrong device or corrupted file): {e.Message}. Resetting.");
+            ResetToDefaults();
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"[SaveManager] Failed to load save data: {e.Message}. Resetting.");
+            ResetToDefaults();
+        }
     }
 
     public void Reset()
     {
         if (File.Exists(FilePath))
-        {
             File.Delete(FilePath);
-        }
 
-        currentCounter = 0;
-        isMuted = false;
-        currentUserId = GenerateNewUUID();
-        ApplyAudioSettings();
-
-        Load();
-        Debug.Log("[SaveManager] Reset save data.");
+        ResetToDefaults();
+        Debug.Log("[SaveManager] Save data reset.");
     }
 
-    public void ApplyAudioSettings()
+    private static byte[] Encrypt(string plainText, byte[] key)
     {
-        AudioListener.volume = isMuted ? 0f : 1f;
+        using (Aes aes = Aes.Create())
+        {
+            aes.Key = key;
+            aes.GenerateIV();
+
+            using (MemoryStream ms = new MemoryStream())
+            {
+                ms.Write(aes.IV, 0, aes.IV.Length);
+
+                using (CryptoStream cs = new CryptoStream(ms, aes.CreateEncryptor(), CryptoStreamMode.Write))
+                using (StreamWriter sw = new StreamWriter(cs))
+                {
+                    sw.Write(plainText);
+                }
+
+                return ms.ToArray();
+            }
+        }
+    }
+
+    private static string Decrypt(byte[] cipherBytes, byte[] key)
+    {
+        using (Aes aes = Aes.Create())
+        {
+            aes.Key = key;
+
+            byte[] iv = new byte[IV_SIZE];
+            byte[] cipher = new byte[cipherBytes.Length - IV_SIZE];
+            System.Array.Copy(cipherBytes, 0, iv, 0, IV_SIZE);
+            System.Array.Copy(cipherBytes, IV_SIZE, cipher, 0, cipher.Length);
+            aes.IV = iv;
+
+            using (MemoryStream ms = new MemoryStream(cipher))
+            using (CryptoStream cs = new CryptoStream(ms, aes.CreateDecryptor(), CryptoStreamMode.Read))
+            using (StreamReader sr = new StreamReader(cs))
+            {
+                return sr.ReadToEnd();
+            }
+        }
+    }
+
+    private static byte[] DeriveKey(string deviceId)
+    {
+        string salted = "SovietCliquer_v1_" + deviceId;
+        using (SHA256 sha = SHA256.Create())
+        {
+            return sha.ComputeHash(Encoding.UTF8.GetBytes(salted));
+        }
+    }
+
+
+    private void ResetToDefaults()
+    {
+        currentCounter = 0;
+        currentUserId = GenerateNewUUID();
+        Save();
     }
 
     private string GenerateNewUUID()
@@ -171,7 +222,6 @@ public class SaveManager : MonoBehaviour
     private bool IsValidUUID(string uuid)
     {
         if (string.IsNullOrEmpty(uuid)) return false;
-        
         return System.Guid.TryParse(uuid, out _);
     }
 }

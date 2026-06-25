@@ -4,15 +4,15 @@ public class VolumeController : MonoBehaviour
 {
     public void ToggleMute()
     {
-        if (SaveManager.Instance != null)
+        if (SettingsManager.Instance != null)
         {
-            SaveManager.Instance.isMuted = !SaveManager.Instance.isMuted;
+            SettingsManager.Instance.ToggleMute();
 
-            SaveManager.Instance.ApplyAudioSettings();
-
-            SaveManager.Instance.Save();
-            
-            Debug.Log("[VolumeController] Sound " + (SaveManager.Instance.isMuted ? "muted" : "on") + " and saved.");
+            Debug.Log("[VolumeController] Sound " + (SettingsManager.Instance.mutedSound ? "muted" : "on") + " and saved.");
+        }
+        else
+        {
+            Debug.LogError("[VolumeController] SettingsManager not found!");
         }
     }
 }

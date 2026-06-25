@@ -14,7 +14,7 @@ public class MenuUIDDisplay : MonoBehaviour
     {
         if (SaveManager.Instance != null && uidText != null)
         {
-            uidText.text = "Player ID: " + SaveManager.Instance.currentUserId;
+            uidText.text = SaveManager.Instance.currentUserId;
         }
         else if (uidText == null)
         {
