@@ -1,24 +1,21 @@
-using UnityEngine;
 using TMPro;
+using UnityEngine;
 
 public class MenuUIDDisplay : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI uidText;
 
-    void Start()
-    {
-        DisplayUUID();
-    }
+    void Start() => DisplayUID();
 
-    public void DisplayUUID()
+    public void DisplayUID()
     {
-        if (SaveManager.Instance != null && uidText != null)
+        if (uidText == null)
         {
-            uidText.text = SaveManager.Instance.currentUserId;
+            Debug.LogError("[MenuUIDDisplay] TextMeshProUGUI not assigned in the inspector.");
+            return;
         }
-        else if (uidText == null)
-        {
-            Debug.LogError("[MenuUIDDisplay] The TextMeshProUGUI component is not assigned in the inspector!");
-        }
+
+        if (SaveManager.Instance != null)
+            uidText.text = SaveManager.Instance.CurrentUserId;
     }
 }

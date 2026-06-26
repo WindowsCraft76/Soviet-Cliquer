@@ -1,5 +1,5 @@
-using UnityEngine;
 using System.IO;
+using UnityEngine;
 
 [System.Serializable]
 public class SettingsData
@@ -15,24 +15,34 @@ public class SettingsManager : MonoBehaviour
     {
         get
         {
-            string roamingPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.ApplicationData);
-            return Path.Combine(roamingPath, ".Soviet-Cliquer", "settings.json");
+            string roaming = System.Environment.GetFolderPath(System.Environment.SpecialFolder.ApplicationData);
+            return Path.Combine(roaming, ".Soviet-Cliquer", "settings.json");
         }
     }
 
-    [HideInInspector]
-    public bool mutedSound = false;
+    [HideInInspector] public bool mutedSound;
 
     void Awake()
     {
         if (Instance != null && Instance != this)
         {
-            Destroy(gameObject);
             return;
         }
-        Instance = this;
 
+        Instance = this;
         Load();
+    }
+
+    public void SetMuted(bool muted)
+    {
+        mutedSound = muted;
+        ApplyAudio();
+        Save();
+    }
+
+    public void ToggleMute()
+    {
+        SetMuted(!mutedSound);
     }
 
     public void Save()
@@ -42,12 +52,12 @@ public class SettingsManager : MonoBehaviour
             mutedSound = mutedSound
         };
 
-        string directory = Path.GetDirectoryName(FilePath);
-        if (!Directory.Exists(directory))
-            Directory.CreateDirectory(directory);
+        string dir = Path.GetDirectoryName(FilePath);
+        if (!Directory.Exists(dir))
+            Directory.CreateDirectory(dir);
 
-        string json = JsonUtility.ToJson(data, prettyPrint: true);
-        File.WriteAllText(FilePath, json);
+        File.WriteAllText(FilePath, JsonUtility.ToJson(data, true));
+
         Debug.Log("[SettingsManager] Settings saved.");
     }
 
@@ -55,34 +65,21 @@ public class SettingsManager : MonoBehaviour
     {
         if (!File.Exists(FilePath))
         {
-            Debug.Log("[SettingsManager] No settings file found. Using defaults.");
             mutedSound = false;
-            ApplyAudioSettings();
+            ApplyAudio();
             Save();
             return;
         }
 
-        string json = File.ReadAllText(FilePath);
-        SettingsData data = JsonUtility.FromJson<SettingsData>(json);
-
+        SettingsData data = JsonUtility.FromJson<SettingsData>(File.ReadAllText(FilePath));
         mutedSound = data.mutedSound;
-        ApplyAudioSettings();
+
+        ApplyAudio();
+
         Debug.Log("[SettingsManager] Settings loaded.");
     }
 
-    public void SetMuted(bool muted)
-    {
-        mutedSound = muted;
-        ApplyAudioSettings();
-        Save();
-    }
-
-    public void ToggleMute()
-    {
-        SetMuted(!mutedSound);
-    }
-
-    public void ApplyAudioSettings()
+    public void ApplyAudio()
     {
         AudioListener.volume = mutedSound ? 0f : 1f;
     }
