@@ -43,6 +43,7 @@ public class SettingsManager : MonoBehaviour
     public void ToggleMute()
     {
         SetMuted(!mutedSound);
+        Debug.Log($"[VolumeController] Sound {(mutedSound ? "muted" : "enabled")}.");
     }
 
     public void Save()
