@@ -12,14 +12,14 @@ public class VersionManager : MonoBehaviour
 {
 
     [Header("API")]
-    [Tooltip("URL of the version API")]
+    [Tooltip("Version API URL")]
     [SerializeField] private string apiUrl = "https://windowscraft76.fr/sovietcliquer/api/?query=version";
 
     [Header("Version Display")]
     [Tooltip("Enable version text display in the menu")]
     [SerializeField] private bool showVersionText = true;
 
-    [Tooltip("TMP_Text field to display the local version")]
+    [Tooltip("TMP_Text field to display the local version (e.g., v0.3.0r)")]
     [SerializeField] private TMP_Text versionLabel;
 
     [Header("Update Notification")]
@@ -29,10 +29,10 @@ public class VersionManager : MonoBehaviour
     [Tooltip("Button that appears when an update is available")]
     [SerializeField] private GameObject updateButtonObject;
 
-    [Tooltip("Update button label text (optional)")]
+    [Tooltip("Update button text (optional)")]
     [SerializeField] private TMP_Text updateButtonLabel;
 
-    [Tooltip("Download URL")]
+    [Tooltip("Download URL / update page")]
     [SerializeField] private string downloadUrl = "https://windowscraft76.fr/sovietcliquer/r/downloadlast/";
 
     private const string RegistryKeyPath =
@@ -41,6 +41,7 @@ public class VersionManager : MonoBehaviour
     private const string RegistryValueName = "DisplayVersion";
 
     private static string s_localRawVersion      = null;
+    private static string s_localDisplayVersion   = null;
     private static string s_remoteVersion         = null;
     private static string s_remoteDisplayVersion  = null;
     private static bool   s_updateAvailable       = false;
@@ -52,9 +53,12 @@ public class VersionManager : MonoBehaviour
         SetUpdateButtonVisible(false);
 
         if (s_localRawVersion == null)
-            s_localRawVersion = ReadLocalVersion();
+        {
+            s_localRawVersion    = ReadLocalVersion();
+            s_localDisplayVersion = FormatLocalVersionForDisplay(s_localRawVersion);
+        }
 
-        UpdateVersionLabel(s_localRawVersion);
+        UpdateVersionLabel(s_localDisplayVersion);
 
         if (s_fetchDone)
         {
@@ -81,7 +85,7 @@ public class VersionManager : MonoBehaviour
         result = QueryRegistry(use32BitView: true);
         if (!string.IsNullOrEmpty(result)) return result;
 
-        Debug.LogWarning($"[VersionManager] Value '{RegistryValueName}' not found in either registry view.");
+        Debug.LogWarning($"[VersionManager] Value '{RegistryValueName}' not found in both registry views.");
         return string.Empty;
 #else
         Debug.LogWarning("[VersionManager] Windows registry reading is not available on this platform.");
@@ -125,7 +129,7 @@ public class VersionManager : MonoBehaviour
         }
         catch (Exception ex)
         {
-            Debug.LogError($"[VersionManager] Error during reg query: {ex.Message}");
+            Debug.LogError($"[VersionManager] reg query error: {ex.Message}");
             return string.Empty;
         }
     }
@@ -140,7 +144,7 @@ public class VersionManager : MonoBehaviour
 
             if (request.result != UnityWebRequest.Result.Success)
             {
-                Debug.LogWarning($"[VersionManager] Unable to reach the API: {request.error}");
+                Debug.LogWarning($"[VersionManager] Unable to connect to the API: {request.error}");
                 yield break;
             }
 
@@ -179,7 +183,7 @@ public class VersionManager : MonoBehaviour
 
         if (response?.last == null)
         {
-            Debug.LogWarning("[VersionManager] Invalid API response (missing 'last' field).");
+            Debug.LogWarning("[VersionManager] Invalid API response ('last' field missing).");
             return;
         }
 
@@ -203,11 +207,11 @@ public class VersionManager : MonoBehaviour
 
         if (string.IsNullOrEmpty(s_remoteVersion))
         {
-            Debug.LogWarning("[VersionManager] No version available from the API.");
+            Debug.LogWarning("[VersionManager] No version available in the API.");
             return;
         }
 
-        Debug.Log($"[VersionManager] Local: '{s_localRawVersion}' | Remote: '{s_remoteDisplayVersion}'");
+        Debug.Log($"[VersionManager] Local: '{s_localRawVersion}' | Remote: '{s_remoteVersion}'");
         CompareVersions();
     }
 
@@ -235,13 +239,13 @@ public class VersionManager : MonoBehaviour
 
         if (localVer < remoteVer)
         {
-            Debug.Log($"[VersionManager] Update available: {s_localRawVersion} → {s_remoteDisplayVersion}");
+            Debug.Log($"[VersionManager] Update available: {s_localRawVersion} → {s_remoteVersion}");
             s_updateAvailable = true;
             s_isFirstInstall  = false;
         }
         else
         {
-            Debug.Log("[VersionManager] Game is up to date.");
+            Debug.Log("[VersionManager] The game is up to date.");
             s_updateAvailable = false;
         }
     }
@@ -257,24 +261,36 @@ public class VersionManager : MonoBehaviour
                 string newVer = s_remoteDisplayVersion ?? string.Empty;
                 updateButtonLabel.text = isFirstInstall
                     ? $"Download latest version!"
-                    : $"New version available!";
+                    : $"New update available!";
             }
         }
     }
 
-    private void UpdateVersionLabel(string rawVersion)
+    private void UpdateVersionLabel(string displayVersion)
     {
         if (!showVersionText || versionLabel == null) return;
 
-        versionLabel.text = string.IsNullOrEmpty(rawVersion)
+        versionLabel.text = string.IsNullOrEmpty(displayVersion)
             ? "Version not found!"
-            : FormatVersionForDisplay(rawVersion);
+            : displayVersion;
     }
 
-    private static string FormatVersionForDisplay(string raw)
+    private static string GetLocalSuffix(string numericVersion)
     {
-        if (string.IsNullOrEmpty(raw)) return string.Empty;
-        return raw.StartsWith("v", StringComparison.OrdinalIgnoreCase) ? raw : "v" + raw;
+        if (string.IsNullOrEmpty(numericVersion)) return string.Empty;
+
+        string[] parts = numericVersion.Split('.');
+        if (parts.Length >= 3 && int.TryParse(parts[2], out int patch) && patch > 0)
+            return "h";
+        if (parts.Length >= 2 && int.TryParse(parts[1], out int minor) && minor > 0)
+            return "b";
+        return "r";
+    }
+
+    private static string FormatLocalVersionForDisplay(string numericVersion)
+    {
+        if (string.IsNullOrEmpty(numericVersion)) return string.Empty;
+        return $"v{numericVersion}{GetLocalSuffix(numericVersion)}";
     }
 
     private void SetUpdateButtonVisible(bool visible)
