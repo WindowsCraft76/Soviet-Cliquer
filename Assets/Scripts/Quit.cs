@@ -4,7 +4,7 @@ public class Quit : MonoBehaviour
 {
     public void QuitGame()
     {
-        SaveManager.Instance.Reset();
+        SaveManager.Instance.Save();
         Debug.Log("Close game.");
         Application.Quit();
     }
