@@ -16,14 +16,8 @@ public class SaveManager : MonoBehaviour
 {
     public static SaveManager Instance { get; private set; }
 
-    private static string FilePath
-    {
-        get
-        {
-            string roaming = System.Environment.GetFolderPath(System.Environment.SpecialFolder.ApplicationData);
-            return Path.Combine(roaming, ".Soviet-Cliquer", "data.pem");
-        }
-    }
+    private static string FilePath =>
+        Path.Combine(Application.persistentDataPath, "data.pem");
 
     public int CurrentCounter { get; private set; }
     public string CurrentUserId { get; private set; }
@@ -62,6 +56,13 @@ public class SaveManager : MonoBehaviour
     void OnApplicationQuit()
     {
         Save();
+    }
+
+    // On mobile, OnApplicationPause(true) = app sent to background → save
+    void OnApplicationPause(bool pause)
+    {
+        if (pause)
+            Save();
     }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)

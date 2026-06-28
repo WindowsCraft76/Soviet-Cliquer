@@ -11,14 +11,8 @@ public class SettingsManager : MonoBehaviour
 {
     public static SettingsManager Instance { get; private set; }
 
-    private static string FilePath
-    {
-        get
-        {
-            string roaming = System.Environment.GetFolderPath(System.Environment.SpecialFolder.ApplicationData);
-            return Path.Combine(roaming, ".Soviet-Cliquer", "settings.json");
-        }
-    }
+    private static string FilePath =>
+        Path.Combine(Application.persistentDataPath, "settings.json");
 
     [HideInInspector] public bool mutedSound;
 
@@ -43,7 +37,7 @@ public class SettingsManager : MonoBehaviour
     public void ToggleMute()
     {
         SetMuted(!mutedSound);
-        Debug.Log($"[VolumeController] Sound {(mutedSound ? "muted" : "enabled")}.");
+        Debug.Log($"[SettingsManager] Sound {(mutedSound ? "muted" : "enabled")}.");
     }
 
     public void Save()

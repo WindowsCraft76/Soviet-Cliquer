@@ -1,16 +1,13 @@
 using System;
 using System.Collections;
-using System.Diagnostics;
 using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEngine.Networking;
-using UnityEngine.UI;
 using TMPro;
 using Debug = UnityEngine.Debug;
 
 public class VersionManager : MonoBehaviour
 {
-
     [Header("API")]
     [Tooltip("Version API URL")]
     [SerializeField] private string apiUrl = "https://windowscraft76.fr/sovietcliquer/api/?query=version";
@@ -35,18 +32,14 @@ public class VersionManager : MonoBehaviour
     [Tooltip("Download URL / update page")]
     [SerializeField] private string downloadUrl = "https://windowscraft76.fr/sovietcliquer/r/downloadlast/";
 
-    private const string RegistryKeyPath =
-        @"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\SovietCliquer";
-
-    private const string RegistryValueName = "DisplayVersion";
-
-    private static string s_localRawVersion      = null;
-    private static string s_localDisplayVersion   = null;
-    private static string s_remoteVersion         = null;
-    private static string s_remoteDisplayVersion  = null;
-    private static bool   s_updateAvailable       = false;
-    private static bool   s_isFirstInstall        = false;
-    private static bool   s_fetchDone             = false;
+    // Static cache — persists across scene changes
+    private static string s_localRawVersion     = null;
+    private static string s_localDisplayVersion  = null;
+    private static string s_remoteVersion        = null;
+    private static string s_remoteDisplayVersion = null;
+    private static bool   s_updateAvailable      = false;
+    private static bool   s_isFirstInstall       = false;
+    private static bool   s_fetchDone            = false;
 
     private void Start()
     {
@@ -54,20 +47,18 @@ public class VersionManager : MonoBehaviour
 
         if (s_localRawVersion == null)
         {
-            s_localRawVersion    = ReadLocalVersion();
+            // Application.version is set in Unity Player Settings → Version field.
+            // It works on Android, iOS, and all other platforms.
+            s_localRawVersion    = Application.version;
             s_localDisplayVersion = FormatLocalVersionForDisplay(s_localRawVersion);
         }
 
         UpdateVersionLabel(s_localDisplayVersion);
 
         if (s_fetchDone)
-        {
             ApplyCachedResult();
-        }
         else
-        {
             StartCoroutine(FetchRemoteVersion());
-        }
     }
 
     private void ApplyCachedResult()
@@ -76,64 +67,7 @@ public class VersionManager : MonoBehaviour
             NotifyUpdate(s_isFirstInstall);
     }
 
-    private string ReadLocalVersion()
-    {
-#if UNITY_STANDALONE_WIN
-        string result = QueryRegistry(use32BitView: false);
-        if (!string.IsNullOrEmpty(result)) return result;
-
-        result = QueryRegistry(use32BitView: true);
-        if (!string.IsNullOrEmpty(result)) return result;
-
-        Debug.LogWarning($"[VersionManager] Value '{RegistryValueName}' not found in both registry views.");
-        return string.Empty;
-#else
-        Debug.LogWarning("[VersionManager] Windows registry reading is not available on this platform.");
-        return string.Empty;
-#endif
-    }
-
-#if UNITY_STANDALONE_WIN
-    private string QueryRegistry(bool use32BitView)
-    {
-        try
-        {
-            string regFlag = use32BitView ? " /reg:32" : string.Empty;
-            string args    = $@"query ""HKLM\{RegistryKeyPath}"" /v {RegistryValueName}{regFlag}";
-
-            var psi = new ProcessStartInfo
-            {
-                FileName               = "reg",
-                Arguments              = args,
-                UseShellExecute        = false,
-                RedirectStandardOutput = true,
-                RedirectStandardError  = true,
-                CreateNoWindow         = true
-            };
-
-            using (Process proc = Process.Start(psi))
-            {
-                if (proc == null) return string.Empty;
-
-                string output = proc.StandardOutput.ReadToEnd();
-                proc.WaitForExit();
-
-                Debug.Log($"[VersionManager] reg query ({(use32BitView ? "32-bit" : "64-bit")}) :\n{output}");
-
-                Match match = Regex.Match(output, @"REG_SZ\s+(\S+)");
-                if (match.Success)
-                    return match.Groups[1].Value.Trim();
-
-                return string.Empty;
-            }
-        }
-        catch (Exception ex)
-        {
-            Debug.LogError($"[VersionManager] reg query error: {ex.Message}");
-            return string.Empty;
-        }
-    }
-#endif
+    // ─── Remote fetch ────────────────────────────────────────────────────────
 
     private IEnumerator FetchRemoteVersion()
     {
@@ -155,9 +89,13 @@ public class VersionManager : MonoBehaviour
         }
     }
 
+    // ─── JSON models ─────────────────────────────────────────────────────────
+
     [Serializable] private class ApiResponse { public LastBlock last; }
-    [Serializable] private class LastBlock  { public string version; public string type; public BetaBlock beta; }
-    [Serializable] private class BetaBlock  { public string version; public string type; }
+    [Serializable] private class LastBlock   { public string version; public string type; public BetaBlock beta; }
+    [Serializable] private class BetaBlock   { public string version; public string type; }
+
+    // ─── Parsing & comparison ────────────────────────────────────────────────
 
     private static string TypeToSuffix(string type)
     {
@@ -201,9 +139,9 @@ public class VersionManager : MonoBehaviour
             suffix    = TypeToSuffix(response.last.beta?.type);
         }
 
-        string cleanNumber        = Regex.Replace(rawNumber.TrimStart('v', 'V'), @"[a-zA-Z]+$", string.Empty).Trim();
-        s_remoteVersion           = cleanNumber;
-        s_remoteDisplayVersion    = $"v{cleanNumber}{suffix}";
+        string cleanNumber     = Regex.Replace(rawNumber.TrimStart('v', 'V'), @"[a-zA-Z]+$", string.Empty).Trim();
+        s_remoteVersion        = cleanNumber;
+        s_remoteDisplayVersion = $"v{cleanNumber}{suffix}";
 
         if (string.IsNullOrEmpty(s_remoteVersion))
         {
@@ -250,19 +188,19 @@ public class VersionManager : MonoBehaviour
         }
     }
 
+    // ─── UI helpers ──────────────────────────────────────────────────────────
+
     private void NotifyUpdate(bool isFirstInstall)
     {
-        if (showUpdateButton)
-        {
-            SetUpdateButtonVisible(true);
+        if (!showUpdateButton) return;
 
-            if (updateButtonLabel != null)
-            {
-                string newVer = s_remoteDisplayVersion ?? string.Empty;
-                updateButtonLabel.text = isFirstInstall
-                    ? $"Download latest version!"
-                    : $"New update available!";
-            }
+        SetUpdateButtonVisible(true);
+
+        if (updateButtonLabel != null)
+        {
+            updateButtonLabel.text = isFirstInstall
+                ? "Download latest version!"
+                : "New update available!";
         }
     }
 
