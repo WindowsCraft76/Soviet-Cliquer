@@ -2504,6 +2504,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ResetButtonLinker
   ResetData: {fileID: 92003809}
+  ResetDataTextTMP: {fileID: 112568730}
+  defaultLabel: Reset Data
+  confirmLabel: You sure?
+  confirmTimeout: 5
 --- !u!4 &1612546005
 Transform:
   m_ObjectHideFlags: 0
