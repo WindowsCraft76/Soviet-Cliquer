@@ -23,7 +23,6 @@ public class SceneChanger : MonoBehaviour
     {
         if (Instance != null && Instance != this)
         {
-            Destroy(gameObject);
             return;
         }
 
