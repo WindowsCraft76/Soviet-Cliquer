@@ -4,36 +4,24 @@ using System.Diagnostics;
 using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEngine.Networking;
-using UnityEngine.UI;
-using TMPro;
 using Debug = UnityEngine.Debug;
 
 public class VersionManager : MonoBehaviour
 {
 
-    [Header("API")]
+    [Header("Configuration")]
     [Tooltip("Version API URL")]
-    [SerializeField] private string apiUrl = "https://windowscraft76.fr/sovietcliquer/api/?query=version";
+    [SerializeField] private string apiUrl;
 
-    [Header("Version Display")]
-    [Tooltip("Enable version text display in the menu")]
-    [SerializeField] private bool showVersionText = true;
+    public static event Action OnLocalVersionReady;
 
-    [Tooltip("TMP_Text field to display the local version (e.g., v0.3.0r)")]
-    [SerializeField] private TMP_Text versionLabel;
+    public static string LocalDisplayVersion => s_localDisplayVersion;
 
-    [Header("Update Notification")]
-    [Tooltip("Enable the update button when a new version is available")]
-    [SerializeField] private bool showUpdateButton = true;
+    public static event Action<bool> OnUpdateAvailable;
 
-    [Tooltip("Button that appears when an update is available")]
-    [SerializeField] private GameObject updateButtonObject;
-
-    [Tooltip("Update button text (optional)")]
-    [SerializeField] private TMP_Text updateButtonLabel;
-
-    [Tooltip("Download URL / update page")]
-    [SerializeField] private string downloadUrl = "https://windowscraft76.fr/sovietcliquer/r/downloadlast/";
+    public static bool HasCheckedForUpdate => s_fetchDone;
+    public static bool IsUpdateAvailable => s_updateAvailable;
+    public static bool IsFirstInstall => s_isFirstInstall;
 
     private const string RegistryKeyPath =
         @"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\SovietCliquer";
@@ -50,15 +38,12 @@ public class VersionManager : MonoBehaviour
 
     private void Start()
     {
-        SetUpdateButtonVisible(false);
-
         if (s_localRawVersion == null)
         {
             s_localRawVersion    = ReadLocalVersion();
             s_localDisplayVersion = FormatLocalVersionForDisplay(s_localRawVersion);
+            OnLocalVersionReady?.Invoke();
         }
-
-        UpdateVersionLabel(s_localDisplayVersion);
 
         if (s_fetchDone)
         {
@@ -252,27 +237,7 @@ public class VersionManager : MonoBehaviour
 
     private void NotifyUpdate(bool isFirstInstall)
     {
-        if (showUpdateButton)
-        {
-            SetUpdateButtonVisible(true);
-
-            if (updateButtonLabel != null)
-            {
-                string newVer = s_remoteDisplayVersion ?? string.Empty;
-                updateButtonLabel.text = isFirstInstall
-                    ? $"Download latest version!"
-                    : $"New update available!";
-            }
-        }
-    }
-
-    private void UpdateVersionLabel(string displayVersion)
-    {
-        if (!showVersionText || versionLabel == null) return;
-
-        versionLabel.text = string.IsNullOrEmpty(displayVersion)
-            ? "Version not found!"
-            : displayVersion;
+        OnUpdateAvailable?.Invoke(isFirstInstall);
     }
 
     private static string GetLocalSuffix(string numericVersion)
@@ -289,22 +254,8 @@ public class VersionManager : MonoBehaviour
 
     private static string FormatLocalVersionForDisplay(string numericVersion)
     {
-        if (string.IsNullOrEmpty(numericVersion)) return string.Empty;
+        if (string.IsNullOrEmpty(numericVersion)) return "Version not found!";
         return $"v{numericVersion}{GetLocalSuffix(numericVersion)}";
     }
 
-    private void SetUpdateButtonVisible(bool visible)
-    {
-        if (updateButtonObject != null)
-            updateButtonObject.SetActive(visible);
-    }
-
-    public void OnUpdateButtonClicked()
-    {
-        if (!string.IsNullOrEmpty(downloadUrl))
-        {
-            Application.OpenURL(downloadUrl);
-            Debug.Log($"[VersionManager] Opening: {downloadUrl}");
-        }
-    }
 }

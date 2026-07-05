@@ -4,6 +4,7 @@ using TMPro;
 
 public class LoadingScreenUI : MonoBehaviour
 {
+    [Header("Configuration")]
     [SerializeField] private Slider progressBar;
     [SerializeField] private Image progressFillImage;
     [SerializeField] private TextMeshProUGUI progressText;

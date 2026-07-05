@@ -6,8 +6,15 @@ public class DiscordManager : MonoBehaviour
 {
     public static DiscordManager Instance { get; private set; }
 
+    [Header("Configuration")]
     [SerializeField] private string applicationId;
+
+    [Header("Image")]
     [SerializeField] private string largeImageKey;
+
+    [Header("Button")]
+    [SerializeField] private string buttonLabel;
+    [SerializeField] private string buttonUrl;
 
     private DiscordRpcClient client;
     private Timestamps sessionTimestamp;
@@ -122,7 +129,7 @@ public class DiscordManager : MonoBehaviour
             isTakingBreak = true;
         }
 
-        string details = isTakingBreak ? "Take a break." : "Is clicking...";
+        string details = isTakingBreak ? "Take a break..." : "Is clicking...";
         SetPresence(details, GetClickState());
     }
 
@@ -152,9 +159,13 @@ public class DiscordManager : MonoBehaviour
             State = state,
             Assets = new Assets
             {
-                LargeImageKey = largeImageKey
+                LargeImageKey = largeImageKey,
+                LargeImageText = VersionManager.LocalDisplayVersion
             },
-            Timestamps = sessionTimestamp
+            Timestamps = sessionTimestamp,
+            Buttons = !string.IsNullOrEmpty(buttonLabel) && !string.IsNullOrEmpty(buttonUrl)
+                ? new[] { new global::DiscordRPC.Button { Label = buttonLabel, Url = buttonUrl } }
+                : null
         });
 
         Debug.Log($"[DiscordManager] Update applied");

@@ -593,6 +593,65 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1241349215
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1241349217}
+  - component: {fileID: 1241349216}
+  - component: {fileID: 1241349218}
+  m_Layer: 0
+  m_Name: VersionManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1241349216
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1241349215}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9962ad8f19448b459acf4a0d64af7c8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::VersionManager
+  apiUrl: https://windowscraft76.fr/sovietcliquer/api/?query=version
+--- !u!4 &1241349217
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1241349215}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 937.3936, y: 492.13046, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1241349218
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1241349215}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f0324de204deb07419ecd33285d795d2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DontDestroyOnLoad
+  disallowMultipleInstancesOf: {fileID: 1241349216}
 --- !u!1 &1406169782
 GameObject:
   m_ObjectHideFlags: 0
@@ -739,7 +798,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 13c21aa85078aac47b397065c1304e82, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SettingsManager
-  mutedSound: 0
 --- !u!4 &1546022259
 Transform:
   m_ObjectHideFlags: 0
@@ -936,6 +994,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DiscordManager
   applicationId: 1507819003706478742
   largeImageKey: ussr_720x720
+  buttonLabel: Download Soviet Cliquer!
+  buttonUrl: https://windowscraft76.fr/sovietcliquer/
 --- !u!4 &2047447919
 Transform:
   m_ObjectHideFlags: 0
@@ -977,5 +1037,6 @@ SceneRoots:
   - {fileID: 1647068676}
   - {fileID: 220786163}
   - {fileID: 2047447919}
+  - {fileID: 1241349217}
   - {fileID: 127664328}
   - {fileID: 1406169786}

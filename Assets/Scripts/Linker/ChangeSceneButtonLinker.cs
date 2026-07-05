@@ -5,6 +5,7 @@ public class ChangeSceneButtonLinker : MonoBehaviour
 {
     [SerializeField] private Button button;
 
+    [Header("Configuration")]
     [Tooltip("Name of the scene to load")]
     [SerializeField] private string sceneName;
 
