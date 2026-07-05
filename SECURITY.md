@@ -6,7 +6,7 @@
 
 | Version    | Supported          |
 | ---------- | ------------------ |
-| 0.3.0      | :white_check_mark: |
+| 0.3.0 >=   | :white_check_mark: |
 | < 0.3.0    | :warning:          |
 
 :white_check_mark: **Supported** - :warning: **Not supported** (Safe) - :x: **Not supported** (Not safe)
