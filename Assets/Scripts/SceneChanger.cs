@@ -7,8 +7,8 @@ public class SceneChanger : MonoBehaviour
 {
     public static SceneChanger Instance { get; private set; }
 
-    [Header("Loading screen")]
-    [SerializeField] private string loadingSceneName = "LoadingScene";
+    [Header("Configuration")]
+    [SerializeField] private string loadingSceneName;
     [SerializeField] private float minimumLoadingTime = 0.5f;
 
     public static event Action<float> OnLoadingProgress;
@@ -23,7 +23,6 @@ public class SceneChanger : MonoBehaviour
     {
         if (Instance != null && Instance != this)
         {
-            Destroy(gameObject);
             return;
         }
 

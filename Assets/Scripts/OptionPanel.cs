@@ -3,7 +3,7 @@ using UnityEngine;
 public class OptionPanel : MonoBehaviour
 {
     [Header("Configuration")]
-    [Tooltip("Options panel to show / hide.")]
+    [Tooltip("Options panel")]
     public GameObject optionPanel;
 
     void Start()

@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class BootstrapLoader : MonoBehaviour
 {
+    [Header("Configuration")]
     [Tooltip("Name of the first scene to load")]
     [SerializeField] private string firstSceneName;
 

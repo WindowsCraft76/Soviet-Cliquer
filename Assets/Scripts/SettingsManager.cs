@@ -1,10 +1,12 @@
+using System;
 using System.IO;
 using UnityEngine;
 
 [System.Serializable]
 public class SettingsData
 {
-    public bool mutedSound = false;
+    public float musicVolume = 1f;
+    public float clickVolume = 1f;
 }
 
 public class SettingsManager : MonoBehaviour
@@ -14,7 +16,11 @@ public class SettingsManager : MonoBehaviour
     private static string FilePath =>
         Path.Combine(Application.persistentDataPath, "settings.json");
 
-    [HideInInspector] public bool mutedSound;
+    public float MusicVolume { get; private set; } = 1f;
+    public float ClickVolume { get; private set; } = 1f;
+
+    public event Action<float> OnMusicVolumeChanged;
+    public event Action<float> OnClickVolumeChanged;
 
     void Awake()
     {
@@ -27,24 +33,26 @@ public class SettingsManager : MonoBehaviour
         Load();
     }
 
-    public void SetMuted(bool muted)
+    public void SetMusicVolume(float volume)
     {
-        mutedSound = muted;
-        ApplyAudio();
+        MusicVolume = Mathf.Clamp01(volume);
+        OnMusicVolumeChanged?.Invoke(MusicVolume);
         Save();
     }
 
-    public void ToggleMute()
+    public void SetClickVolume(float volume)
     {
-        SetMuted(!mutedSound);
-        Debug.Log($"[SettingsManager] Sound {(mutedSound ? "muted" : "enabled")}.");
+        ClickVolume = Mathf.Clamp01(volume);
+        OnClickVolumeChanged?.Invoke(ClickVolume);
+        Save();
     }
 
     public void Save()
     {
         SettingsData data = new SettingsData
         {
-            mutedSound = mutedSound
+            musicVolume = MusicVolume,
+            clickVolume = ClickVolume
         };
 
         string dir = Path.GetDirectoryName(FilePath);
@@ -60,22 +68,19 @@ public class SettingsManager : MonoBehaviour
     {
         if (!File.Exists(FilePath))
         {
-            mutedSound = false;
-            ApplyAudio();
+            MusicVolume = 1f;
+            ClickVolume = 1f;
             Save();
             return;
         }
 
         SettingsData data = JsonUtility.FromJson<SettingsData>(File.ReadAllText(FilePath));
-        mutedSound = data.mutedSound;
+        MusicVolume = data.musicVolume;
+        ClickVolume = data.clickVolume;
 
-        ApplyAudio();
+        OnMusicVolumeChanged?.Invoke(MusicVolume);
+        OnClickVolumeChanged?.Invoke(ClickVolume);
 
         Debug.Log("[SettingsManager] Settings loaded.");
-    }
-
-    public void ApplyAudio()
-    {
-        AudioListener.volume = mutedSound ? 0f : 1f;
     }
 }

@@ -7,7 +7,7 @@ public class ResetDataButtonLinker : MonoBehaviour
     [SerializeField] private Button ResetData;
     [SerializeField] private TMP_Text ResetDataTextTMP;
 
-    [Header("Config")]
+    [Header("Configuration")]
     [SerializeField] private string defaultLabel = "Reset";
     [SerializeField] private string confirmLabel = "You sure?";
     [SerializeField] private float confirmTimeout = 10f;

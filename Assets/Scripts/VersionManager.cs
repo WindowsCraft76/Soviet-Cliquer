@@ -3,62 +3,52 @@ using System.Collections;
 using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEngine.Networking;
-using TMPro;
 using Debug = UnityEngine.Debug;
 
 public class VersionManager : MonoBehaviour
 {
-    [Header("API")]
+
+    [Header("Configuration")]
     [Tooltip("Version API URL")]
-    [SerializeField] private string apiUrl = "https://windowscraft76.fr/sovietcliquer/api/?query=version";
+    [SerializeField] private string apiUrl;
 
-    [Header("Version Display")]
-    [Tooltip("Enable version text display in the menu")]
-    [SerializeField] private bool showVersionText = true;
+    public static event Action OnLocalVersionReady;
 
-    [Tooltip("TMP_Text field to display the local version (e.g., v0.3.0r)")]
-    [SerializeField] private TMP_Text versionLabel;
+    public static string LocalDisplayVersion => s_localDisplayVersion;
 
-    [Header("Update Notification")]
-    [Tooltip("Enable the update button when a new version is available")]
-    [SerializeField] private bool showUpdateButton = true;
+    public static event Action<bool> OnUpdateAvailable;
 
-    [Tooltip("Button that appears when an update is available")]
-    [SerializeField] private GameObject updateButtonObject;
+    public static bool HasCheckedForUpdate => s_fetchDone;
+    public static bool IsUpdateAvailable => s_updateAvailable;
+    public static bool IsFirstInstall => s_isFirstInstall;
 
-    [Tooltip("Update button text (optional)")]
-    [SerializeField] private TMP_Text updateButtonLabel;
-
-    [Tooltip("Download URL / update page")]
-    [SerializeField] private string downloadUrl = "https://windowscraft76.fr/sovietcliquer/r/downloadlast/";
-
-    // Static cache — persists across scene changes
-    private static string s_localRawVersion     = null;
-    private static string s_localDisplayVersion  = null;
-    private static string s_remoteVersion        = null;
-    private static string s_remoteDisplayVersion = null;
-    private static bool   s_updateAvailable      = false;
-    private static bool   s_isFirstInstall       = false;
-    private static bool   s_fetchDone            = false;
+    private static string s_localRawVersion      = null;
+    private static string s_localDisplayVersion   = null;
+    private static string s_remoteVersion         = null;
+    private static string s_remoteDisplayVersion  = null;
+    private static bool   s_updateAvailable       = false;
+    private static bool   s_isFirstInstall        = false;
+    private static bool   s_fetchDone             = false;
 
     private void Start()
     {
-        SetUpdateButtonVisible(false);
-
         if (s_localRawVersion == null)
         {
             // Application.version is set in Unity Player Settings → Version field.
             // It works on Android, iOS, and all other platforms.
-            s_localRawVersion    = Application.version;
+            s_localRawVersion    = ReadLocalVersion();
             s_localDisplayVersion = FormatLocalVersionForDisplay(s_localRawVersion);
+            OnLocalVersionReady?.Invoke();
         }
 
-        UpdateVersionLabel(s_localDisplayVersion);
-
         if (s_fetchDone)
+        {
             ApplyCachedResult();
+        }
         else
+        {
             StartCoroutine(FetchRemoteVersion());
+        }
     }
 
     private void ApplyCachedResult()
@@ -67,7 +57,10 @@ public class VersionManager : MonoBehaviour
             NotifyUpdate(s_isFirstInstall);
     }
 
-    // ─── Remote fetch ────────────────────────────────────────────────────────
+    private string ReadLocalVersion()
+    {
+        return Application.version;
+    }
 
     private IEnumerator FetchRemoteVersion()
     {
@@ -89,13 +82,9 @@ public class VersionManager : MonoBehaviour
         }
     }
 
-    // ─── JSON models ─────────────────────────────────────────────────────────
-
     [Serializable] private class ApiResponse { public LastBlock last; }
-    [Serializable] private class LastBlock   { public string version; public string type; public BetaBlock beta; }
-    [Serializable] private class BetaBlock   { public string version; public string type; }
-
-    // ─── Parsing & comparison ────────────────────────────────────────────────
+    [Serializable] private class LastBlock  { public string version; public string type; public BetaBlock beta; }
+    [Serializable] private class BetaBlock  { public string version; public string type; }
 
     private static string TypeToSuffix(string type)
     {
@@ -139,9 +128,9 @@ public class VersionManager : MonoBehaviour
             suffix    = TypeToSuffix(response.last.beta?.type);
         }
 
-        string cleanNumber     = Regex.Replace(rawNumber.TrimStart('v', 'V'), @"[a-zA-Z]+$", string.Empty).Trim();
-        s_remoteVersion        = cleanNumber;
-        s_remoteDisplayVersion = $"v{cleanNumber}{suffix}";
+        string cleanNumber        = Regex.Replace(rawNumber.TrimStart('v', 'V'), @"[a-zA-Z]+$", string.Empty).Trim();
+        s_remoteVersion           = cleanNumber;
+        s_remoteDisplayVersion    = $"v{cleanNumber}{suffix}";
 
         if (string.IsNullOrEmpty(s_remoteVersion))
         {
@@ -188,29 +177,9 @@ public class VersionManager : MonoBehaviour
         }
     }
 
-    // ─── UI helpers ──────────────────────────────────────────────────────────
-
     private void NotifyUpdate(bool isFirstInstall)
     {
-        if (!showUpdateButton) return;
-
-        SetUpdateButtonVisible(true);
-
-        if (updateButtonLabel != null)
-        {
-            updateButtonLabel.text = isFirstInstall
-                ? "Download latest version!"
-                : "New update available!";
-        }
-    }
-
-    private void UpdateVersionLabel(string displayVersion)
-    {
-        if (!showVersionText || versionLabel == null) return;
-
-        versionLabel.text = string.IsNullOrEmpty(displayVersion)
-            ? "Version not found!"
-            : displayVersion;
+        OnUpdateAvailable?.Invoke(isFirstInstall);
     }
 
     private static string GetLocalSuffix(string numericVersion)
@@ -227,22 +196,8 @@ public class VersionManager : MonoBehaviour
 
     private static string FormatLocalVersionForDisplay(string numericVersion)
     {
-        if (string.IsNullOrEmpty(numericVersion)) return string.Empty;
+        if (string.IsNullOrEmpty(numericVersion)) return "Version not found!";
         return $"v{numericVersion}{GetLocalSuffix(numericVersion)}";
     }
 
-    private void SetUpdateButtonVisible(bool visible)
-    {
-        if (updateButtonObject != null)
-            updateButtonObject.SetActive(visible);
-    }
-
-    public void OnUpdateButtonClicked()
-    {
-        if (!string.IsNullOrEmpty(downloadUrl))
-        {
-            Application.OpenURL(downloadUrl);
-            Debug.Log($"[VersionManager] Opening: {downloadUrl}");
-        }
-    }
 }
