@@ -28,6 +28,8 @@ public class VersionManager : MonoBehaviour
 
     private const string RegistryValueName = "DisplayVersion";
 
+    private const string LinuxPackageName = "sovietcliquer";
+
     private static string s_localRawVersion      = null;
     private static string s_localDisplayVersion   = null;
     private static string s_remoteVersion         = null;
@@ -72,8 +74,17 @@ public class VersionManager : MonoBehaviour
 
         Debug.LogWarning($"[VersionManager] Value '{RegistryValueName}' not found in both registry views.");
         return string.Empty;
+#elif UNITY_STANDALONE_LINUX
+        string result = QueryDpkg();
+        if (!string.IsNullOrEmpty(result)) return result;
+
+        result = QueryRpm();
+        if (!string.IsNullOrEmpty(result)) return result;
+
+        Debug.LogWarning($"[VersionManager] Package '{LinuxPackageName}' not found via dpkg or rpm.");
+        return string.Empty;
 #else
-        Debug.LogWarning("[VersionManager] Windows registry reading is not available on this platform.");
+        Debug.LogWarning("[VersionManager] Local version reading is not available on this platform.");
         return string.Empty;
 #endif
     }
@@ -117,6 +128,95 @@ public class VersionManager : MonoBehaviour
             Debug.LogError($"[VersionManager] reg query error: {ex.Message}");
             return string.Empty;
         }
+    }
+#endif
+
+#if UNITY_STANDALONE_LINUX
+    private string QueryDpkg()
+    {
+        try
+        {
+            var psi = new ProcessStartInfo
+            {
+                FileName               = "dpkg-query",
+                Arguments              = $"-W -f=${{Version}} {LinuxPackageName}",
+                UseShellExecute        = false,
+                RedirectStandardOutput = true,
+                RedirectStandardError  = true,
+                CreateNoWindow         = true
+            };
+
+            using (Process proc = Process.Start(psi))
+            {
+                if (proc == null) return string.Empty;
+
+                string output = proc.StandardOutput.ReadToEnd().Trim();
+                proc.WaitForExit();
+
+                Debug.Log($"[VersionManager] dpkg-query exit={proc.ExitCode} output='{output}'");
+
+                if (proc.ExitCode == 0 && !string.IsNullOrEmpty(output))
+                    return CleanPackageVersion(output);
+
+                return string.Empty;
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.Log($"[VersionManager] dpkg-query indisponible : {ex.Message}");
+            return string.Empty;
+        }
+    }
+
+    private string QueryRpm()
+    {
+        try
+        {
+            var psi = new ProcessStartInfo
+            {
+                FileName               = "rpm",
+                Arguments              = $"-q --qf %{{VERSION}} {LinuxPackageName}",
+                UseShellExecute        = false,
+                RedirectStandardOutput = true,
+                RedirectStandardError  = true,
+                CreateNoWindow         = true
+            };
+
+            using (Process proc = Process.Start(psi))
+            {
+                if (proc == null) return string.Empty;
+
+                string output = proc.StandardOutput.ReadToEnd().Trim();
+                proc.WaitForExit();
+
+                Debug.Log($"[VersionManager] rpm -q exit={proc.ExitCode} output='{output}'");
+
+                if (proc.ExitCode == 0 && !string.IsNullOrEmpty(output))
+                    return CleanPackageVersion(output);
+
+                return string.Empty;
+            }
+        }
+        catch (Exception ex)
+        {
+            // rpm absent (ex: distribution basée sur Debian) : pas une erreur bloquante.
+            Debug.Log($"[VersionManager] rpm indisponible : {ex.Message}");
+            return string.Empty;
+        }
+    }
+
+    // "2:1.2.3-1" -> "1.2.3" (retire l'epoch éventuel et la révision de paquet fpm/dpkg/rpm)
+    private static string CleanPackageVersion(string raw)
+    {
+        if (string.IsNullOrEmpty(raw)) return raw;
+
+        int colonIndex = raw.IndexOf(':');
+        if (colonIndex >= 0) raw = raw.Substring(colonIndex + 1);
+
+        int dashIndex = raw.IndexOf('-');
+        if (dashIndex >= 0) raw = raw.Substring(0, dashIndex);
+
+        return raw.Trim();
     }
 #endif
 

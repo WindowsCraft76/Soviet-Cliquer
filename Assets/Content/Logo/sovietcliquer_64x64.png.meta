@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: c9c0e8cca22cabe45a469140308c4ecf
+guid: d74c51010f6d4fb43b3f898c4d9a46a5
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 1477907053595340492
-    second: ussr_0
+      213: -7377761679428268180
+    second: sovietcliquer_64x64_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -97,7 +97,7 @@ TextureImporter:
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 4
-    buildTarget: WebGL
+    buildTarget: Android
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
@@ -110,7 +110,7 @@ TextureImporter:
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 4
-    buildTarget: WindowsStoreApps
+    buildTarget: iOS
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
@@ -126,13 +126,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: ussr_0
+      name: sovietcliquer_64x64_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 500
-        height: 500
+        width: 64
+        height: 64
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -141,8 +141,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: cce289c82a4928410800000000000000
-      internalID: 1477907053595340492
+      spriteID: c6f403477dcec9990800000000000000
+      internalID: -7377761679428268180
       vertices: []
       indices: 
       edges: []
@@ -161,7 +161,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      ussr_0: 1477907053595340492
+      sovietcliquer_64x64_0: -7377761679428268180
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
