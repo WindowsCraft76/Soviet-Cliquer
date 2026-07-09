@@ -199,13 +199,11 @@ public class VersionManager : MonoBehaviour
         }
         catch (Exception ex)
         {
-            // rpm absent (ex: distribution basée sur Debian) : pas une erreur bloquante.
             Debug.Log($"[VersionManager] rpm indisponible : {ex.Message}");
             return string.Empty;
         }
     }
 
-    // "2:1.2.3-1" -> "1.2.3" (retire l'epoch éventuel et la révision de paquet fpm/dpkg/rpm)
     private static string CleanPackageVersion(string raw)
     {
         if (string.IsNullOrEmpty(raw)) return raw;

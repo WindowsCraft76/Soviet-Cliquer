@@ -26,7 +26,7 @@ public class UpdateButtonLinker : MonoBehaviour
         if (button == null)
         {
             button = GetComponent<Button>();
-        }
+        }//
 
         if (button == null)
         {
@@ -42,16 +42,10 @@ public class UpdateButtonLinker : MonoBehaviour
             updateButtonLabel = updateButtonObject.GetComponentInChildren<TMP_Text>(true);
         }
 
-        // Subscribed in Awake (not OnEnable) on purpose: SetUpdateButtonVisible(false)
-        // below can deactivate this component's own GameObject (when updateButtonObject
-        // is the object the script lives on) before OnEnable ever runs. Awake still runs
-        // fully before that happens, so this is the only place guaranteed to fire.
         VersionManager.OnUpdateAvailable += HandleUpdateAvailable;
 
         SetUpdateButtonVisible(false);
 
-        // The check may have already completed (e.g. in a scene loaded before this
-        // one) before this button existed to hear the event — catch up here.
         if (VersionManager.HasCheckedForUpdate && VersionManager.IsUpdateAvailable)
         {
             HandleUpdateAvailable(VersionManager.IsFirstInstall);
