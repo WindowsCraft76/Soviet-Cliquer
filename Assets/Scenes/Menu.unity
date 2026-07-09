@@ -502,9 +502,9 @@ RectTransform:
   - {fileID: 112568729}
   m_Father: {fileID: 1864085172}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -300}
+  m_AnchorMin: {x: 0.5, y: 0}
+  m_AnchorMax: {x: 0.5, y: 0}
+  m_AnchoredPosition: {x: 0, y: 240}
   m_SizeDelta: {x: 730, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &92003809
@@ -5578,7 +5578,7 @@ GameObject:
   - component: {fileID: 1611195784}
   - component: {fileID: 1611195788}
   m_Layer: 5
-  m_Name: Menu
+  m_Name: Main
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7540,7 +7540,7 @@ GameObject:
   - component: {fileID: 1957300104}
   - component: {fileID: 1957300103}
   m_Layer: 5
-  m_Name: texts
+  m_Name: Texts
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
