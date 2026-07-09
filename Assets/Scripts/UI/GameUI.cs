@@ -20,6 +20,10 @@ public class GameUI : MonoBehaviour
     [Header("Counter")]
     public TMP_Text counterText;
     public string defaultText = "Click on logo!";
+
+    [Header("Debug")]
+    [SerializeField] private bool debugModeEnabled = false;
+    [SerializeField] private double debugCounterValue = 0;
     
     private Vector3   _originalScale;
     private Coroutine _animCoroutine;
@@ -50,6 +54,7 @@ public class GameUI : MonoBehaviour
         {
             ApplyClickVolume(SettingsManager.Instance.ClickVolume);
             SettingsManager.Instance.OnClickVolumeChanged += ApplyClickVolume;
+            SettingsManager.Instance.OnNumberFormatChanged += OnNumberFormatChanged;
         }
 
     RefreshCounter();
@@ -70,7 +75,7 @@ public class GameUI : MonoBehaviour
         if (audioSource != null && clickSound != null)
             audioSource.PlayOneShot(clickSound);
 
-        if (buttonRect != null)
+        if (buttonRect != null && (SettingsManager.Instance == null || SettingsManager.Instance.AnimationsEnabled))
         {
             if (_animCoroutine != null)
                 StopCoroutine(_animCoroutine);
@@ -87,10 +92,28 @@ public class GameUI : MonoBehaviour
             return;
         }
 
+        NumberFormatType format = SettingsManager.Instance != null
+            ? SettingsManager.Instance.NumberFormat
+            : NumberFormatType.Abbreviated;
+
+        if (debugModeEnabled)
+        {
+            counterText.text = debugCounterValue > 0
+                ? NumberFormatter.Format(debugCounterValue, format)
+                : defaultText;
+            return;
+        }
+
         if (SaveManager.Instance != null && SaveManager.Instance.CurrentCounter > 0)
-            counterText.text = SaveManager.Instance.CurrentCounter.ToString();
+            counterText.text = NumberFormatter.Format(SaveManager.Instance.CurrentCounter, format);
         else
             counterText.text = defaultText;
+    }
+
+    private void OnValidate()
+    {
+        if (Application.isPlaying && counterText != null)
+            RefreshCounter();
     }
 
     private IEnumerator AnimateButton()
@@ -104,7 +127,10 @@ public class GameUI : MonoBehaviour
     void OnDestroy()
     {
         if (SettingsManager.Instance != null)
+        {
             SettingsManager.Instance.OnClickVolumeChanged -= ApplyClickVolume;
+            SettingsManager.Instance.OnNumberFormatChanged -= OnNumberFormatChanged;
+        }
         if (button != null)
             button.onClick.RemoveListener(Click);
     }
@@ -113,5 +139,10 @@ public class GameUI : MonoBehaviour
     {
         if (audioSource != null)
             audioSource.volume = volume;
+    }
+
+    private void OnNumberFormatChanged(NumberFormatType format)
+    {
+        RefreshCounter();
     }
 }

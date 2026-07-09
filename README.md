@@ -1,6 +1,6 @@
 <div align="center">
     <picture>
-        <img src="./Assets/Content/GitHub/banner.png" alt="Banner" width="500" height="90">
+        <img src="./Assets/Resources/GitHub/banner.png" alt="Banner" width="500" height="90">
     </picture>
     <h3>Mobile Version</h3>
     <p>
@@ -29,8 +29,9 @@
 
 Currently supported:
 
-* **Windows**
 * **Android**
+* Windows
+* Linux
 
 Support for other operating systems may come in the future.
 

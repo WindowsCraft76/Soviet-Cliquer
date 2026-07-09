@@ -6,7 +6,7 @@ public class OpenURL : MonoBehaviour
     {
         if (string.IsNullOrWhiteSpace(url))
         {
-            Debug.LogWarning("URL vide.");
+            Debug.LogWarning("Empty URL.");
             return;
         }
 
