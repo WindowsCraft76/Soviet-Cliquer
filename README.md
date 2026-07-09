@@ -1,6 +1,6 @@
 <div align="center">
     <picture>
-        <img src="./Assets/Content/GitHub/banner.png" alt="Banner" width="500" height="90">
+        <img src="./Assets/Resources/GitHub/banner.png" alt="Banner" width="500" height="90">
     </picture>
     <p>
         <a href="https://windowscraft76.fr/sovietcliquer/r/downloadlast/"><img alt="Release" src="https://img.shields.io/github/v/release/WindowsCraft76/Soviet-Cliquer?style=for-the-badge"></a>
@@ -29,7 +29,8 @@
 Currently supported:
 
 * **Windows**
-* **Android**
+* **Linux**
+* Android
 
 Support for other operating systems may come in the future.
 
