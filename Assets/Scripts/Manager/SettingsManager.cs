@@ -16,7 +16,7 @@ public class SettingsData
     public float clickVolume = 1f;
     public float uiScale = 1f;
     public float gameMusicVolume = 1f;
-    public NumberFormatType numberFormat = NumberFormatType.Abbreviated;
+    public NumberFormatType numberFormat = NumberFormatType.Separated;
     public bool animationsEnabled = true;
 }
 
@@ -40,7 +40,7 @@ public class SettingsManager : MonoBehaviour
     public float ClickVolume { get; private set; } = 1f;
     public float UIScale { get; private set; } = 1f;
     public float GameMusicVolume { get; private set; } = 1f;
-    public NumberFormatType NumberFormat { get; private set; } = NumberFormatType.Abbreviated;
+    public NumberFormatType NumberFormat { get; private set; } = NumberFormatType.Separated;
     public bool AnimationsEnabled { get; private set; } = true;
 
     public event Action<float> OnMenuMusicVolumeChanged;
@@ -134,7 +134,7 @@ public class SettingsManager : MonoBehaviour
             ClickVolume = 1f;
             UIScale = 1f;
             GameMusicVolume = 1f;
-            NumberFormat = NumberFormatType.Abbreviated;
+            NumberFormat = NumberFormatType.Separated;
             AnimationsEnabled = true;
             Save();
             return;
