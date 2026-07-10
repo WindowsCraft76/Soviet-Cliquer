@@ -94,7 +94,7 @@ public class GameUI : MonoBehaviour
 
         NumberFormatType format = SettingsManager.Instance != null
             ? SettingsManager.Instance.NumberFormat
-            : NumberFormatType.Abbreviated;
+            : NumberFormatType.Separated;
 
         if (debugModeEnabled)
         {
